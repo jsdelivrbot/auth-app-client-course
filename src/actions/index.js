@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { browserHistory } from 'react-router'
-import { AUTH_USER, UNAUTH_USER, AUTH_ERROR } from './types'
+import { AUTH_USER, UNAUTH_USER, AUTH_ERROR, FETCH_MESSAGE } from './types'
 
 const ROOT_URL = 'http://localhost:3000'
 
@@ -46,5 +46,17 @@ export function signupUser({ email, password }) {
         browserHistory.push('/feature')
       })
       .catch(error => dispatch(authError(error.response.data.error)))
+  }
+}
+
+export function fetchMessage() {
+  return function(dispatch) {
+    axios.get(ROOT_URL, { headers: { authorization: localStorage.getItem('token') } })
+      .then(response => {
+        dispatch({
+          type: FETCH_MESSAGE,
+          payload: response.data.secret
+        })
+      })
   }
 }
